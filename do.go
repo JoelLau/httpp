@@ -1,6 +1,7 @@
 package httpp
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 )
@@ -13,6 +14,11 @@ func Do(req Request, opts ...DoOptFunc) (response Response, err error) {
 		return
 	}
 
+	if client == nil {
+		err = errors.New("nil client")
+		return
+	}
+
 	param := DoParam{Client: client, Request: req}
 	for _, opt := range opts {
 		param, err = opt(param)
@@ -22,6 +28,7 @@ func Do(req Request, opts ...DoOptFunc) (response Response, err error) {
 		}
 	}
 
+	fmt.Printf("+%v", param)
 	_, err = param.Client.Do(&param.Request)
 	if err != nil {
 		err = fmt.Errorf("error while making http request: %w", err)

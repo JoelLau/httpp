@@ -15,6 +15,7 @@ func HttpClient(opts ...ClientOptFunc) (c *Client, err error) {
 		}
 	}
 
+	c = &client
 	return
 }
 
