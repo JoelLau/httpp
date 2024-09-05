@@ -36,6 +36,45 @@ func Post(urlStr string, body HttpBody, opts ...OptFunc[DoParam]) (res Response,
 	return Do(req, opts...)
 }
 
+func Put(urlStr string, body HttpBody, opts ...OptFunc[DoParam]) (res Response, err error) {
+	URL, err := url.Parse(urlStr)
+	if err != nil {
+		err = fmt.Errorf("invalid url: %w", err)
+		return
+	}
+	req := Request{Method: http.MethodPut, URL: URL, Body: body.Body}
+	if body.ContentType == "" {
+		req.Header.Add("Content-Type", body.ContentType)
+	}
+
+	return Do(req, opts...)
+}
+
+func Patch(urlStr string, body HttpBody, opts ...OptFunc[DoParam]) (res Response, err error) {
+	URL, err := url.Parse(urlStr)
+	if err != nil {
+		err = fmt.Errorf("invalid url: %w", err)
+		return
+	}
+	req := Request{Method: http.MethodPatch, URL: URL, Body: body.Body}
+	if body.ContentType == "" {
+		req.Header.Add("Content-Type", body.ContentType)
+	}
+
+	return Do(req, opts...)
+}
+
+func Delete(urlStr string, opts ...OptFunc[DoParam]) (res Response, err error) {
+	URL, err := url.Parse(urlStr)
+	if err != nil {
+		err = fmt.Errorf("invalid url: %w", err)
+		return
+	}
+
+	req := Request{Method: http.MethodDelete, URL: URL}
+	return Do(req, opts...)
+}
+
 func WithParams(params io.ReadCloser) OptFunc[DoParam] {
 	return func(oldParams DoParam) (newParams DoParam, err error) {
 		newParams = oldParams
